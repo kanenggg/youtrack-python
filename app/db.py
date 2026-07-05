@@ -1,30 +1,35 @@
-from user.rules import MOCK_USERS
+import os
+import asyncpg
+from dotenv import load_dotenv
 
-# mock DB — key: email, value: {id, full_name}
-_mock_db: dict[str, dict] = {
-    u["email"]: {"id": u["id"], "full_name": u["fullName"]} for u in MOCK_USERS
-}
+load_dotenv()
+
+pool: asyncpg.Pool | None = None
 
 
 async def init_pool():
-    pass
+    global pool
+    pool = await asyncpg.create_pool(os.getenv("DATABASE_URL"))
 
 
 async def close_pool():
-    pass
+    if pool:
+        await pool.close()
 
 
-async def get_mock_user_by_email(email: str) -> dict | None:
-    return _mock_db.get(email)
+async def get_user_by_email(email: str) -> asyncpg.Record | None:
+    async with pool.acquire() as conn:
+        return await conn.fetchrow("SELECT * FROM user WHERE email = $1", email)
 
 
-async def update_user_name_in_db(email: str, current_first: str, current_last: str, new_full_name: str) -> None:
-    """เช็คชื่อปัจจุบันก่อน — raise ถ้าไม่พบหรือชื่อไม่ตรง"""
-    user = _mock_db.get(email)
-    if user is None:
-        raise ValueError(f"ไม่พบ user ที่มีอีเมล {email} ใน DB")
-    current_full = f"{current_first} {current_last}"
-    if user["full_name"] != current_full:
-        raise ValueError(f"ชื่อปัจจุบันไม่ตรง: คาดหวัง '{user['full_name']}' แต่ได้ '{current_full}'")
-    _mock_db[email]["full_name"] = new_full_name
-    _mock_db[email] = new_full_name
+async def update_user_name_in_db(email: str, current_first: str, current_last: str, new_first: str, new_last: str) -> None:
+    async with pool.acquire() as conn:
+        user = await conn.fetchrow('SELECT * FROM "user" WHERE email = $1', email)
+        if user is None:
+            raise ValueError(f"ไม่พบ user ที่มีอีเมล {email} ใน DB")
+        if user["name"] != current_first or user["lastname"] != current_last:
+            raise ValueError(f"ชื่อปัจจุบันไม่ตรง: คาดหวัง '{user['name']} {user['lastname']}' แต่ได้ '{current_first} {current_last}'")
+        await conn.execute(
+            'UPDATE "user" SET name = $1, lastname = $2 WHERE email = $3',
+            new_first, new_last, email
+        )

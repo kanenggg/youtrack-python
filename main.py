@@ -20,7 +20,7 @@ from app.youtrack_client import (
     update_user_email,
     update_user_name,
 )
-from app.db import init_pool, close_pool, update_user_name_in_db, get_mock_user_by_email
+from app.db import init_pool, close_pool, update_user_name_in_db
 
 
 @asynccontextmanager
@@ -98,14 +98,9 @@ async def create_card_comment(issue_id: str, req: AddCommentRequest):
 
 @app.post("/api/update-name")
 async def update_name(req: UpdateNameRequest):
-    user = await get_mock_user_by_email(req.email)
-    if user is None:
-        return {"success": False, "message": f"ไม่พบ user ที่มีอีเมล {req.email}"}
-
-    new_full_name = f"{req.new_first_name} {req.new_last_name}"
     try:
-        await update_user_name_in_db(req.email, req.current_first_name, req.current_last_name, new_full_name)
+        await update_user_name_in_db(req.email, req.current_first_name, req.current_last_name, req.new_first_name, req.new_last_name)
     except ValueError as exc:
         return {"success": False, "message": str(exc)}
 
-    return {"success": True, "message": f"แก้ไขชื่อเป็น {new_full_name} สำเร็จ"}
+    return {"success": True, "message": f"แก้ไขชื่อเป็น {req.new_first_name} {req.new_last_name} สำเร็จ"}

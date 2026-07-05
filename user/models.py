@@ -1,28 +1,26 @@
+from typing import Annotated
 from pydantic import BaseModel, Field
 
 
 class CreateCardRequest(BaseModel):
     summary: str
     description: str | None = None
-    project_id: str = Field(..., alias="projectId")
+    project_id: Annotated[str, Field(alias="projectId")]
 
-    class Config:
-        populate_by_name = True
+    model_config = {"populate_by_name": True}
 
 
 class UpdateEmailRequest(BaseModel):
-    issue_id: str = Field(..., alias="issueId")
-    new_email: str = Field(..., alias="newEmail")
+    issue_id: Annotated[str, Field(alias="issueId")]
+    new_email: Annotated[str, Field(alias="newEmail")]
 
-    class Config:
-        populate_by_name = True
+    model_config = {"populate_by_name": True}
 
 
 class SetStateRequest(BaseModel):
-    state_name: str = Field(..., alias="stateName")
+    state_name: Annotated[str, Field(alias="stateName")]
 
-    class Config:
-        populate_by_name = True
+    model_config = {"populate_by_name": True}
 
 
 class AddCommentRequest(BaseModel):
@@ -30,18 +28,17 @@ class AddCommentRequest(BaseModel):
 
 
 class WebhookPayload(BaseModel):
-    custom_field: str | None = Field(default=None, alias="customField")
+    custom_field: Annotated[str | None, Field(alias="customField")] = None
 
-    class Config:
-        populate_by_name = True
-        
+    model_config = {"populate_by_name": True}
+
+
 class UpdateNameRequest(BaseModel):
-    issue_id: str | None = Field(default=None, alias="issueId")
+    issue_id: Annotated[str | None, Field(alias="issueId")] = None
     email: str
-    current_first_name: str | None = Field(default=None, alias="currentFirstName")
-    current_last_name: str | None = Field(default=None, alias="currentLastName")
-    new_first_name: str = Field(..., alias="newFirstName")
-    new_last_name: str = Field(..., alias="newLastName")
+    current_first_name: Annotated[str | None, Field(alias="currentFirstName")] = None
+    current_last_name: Annotated[str | None, Field(alias="currentLastName")] = None
+    new_first_name: Annotated[str, Field(alias="newFirstName")]
+    new_last_name: Annotated[str, Field(alias="newLastName")]
 
-    class Config:
-        populate_by_name = True
+    model_config = {"populate_by_name": True}
