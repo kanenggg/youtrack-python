@@ -1,11 +1,14 @@
 apiVersion: backstage.io/v1alpha1
-kind: Component
+kind: Location
 metadata:
-  name: my-first-service
-  description: test first project
-  annotations:
-    github.com/project-slug: kanenggg/youtrack-python
+  name: youtrack-python-catalog
+  description: Catalog entry point for the youtrack-python project
 spec:
-  type: service
-  lifecycle: experimental
-  owner: guest
+  type: file
+  targets:
+    - ./catalog/group.yaml
+    - ./catalog/domain.yaml
+    - ./catalog/system.yaml
+    - ./catalog/component.yaml
+    - ./catalog/postgres.yaml
+    - ./catalog/youtrack.yaml

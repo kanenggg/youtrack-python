@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: postgres
+  description: PostgreSQL database used by the youtrack-python service
+spec:
+  type: database
+  owner: group:default/kanenggg
+  system: system:default/youtrack-python

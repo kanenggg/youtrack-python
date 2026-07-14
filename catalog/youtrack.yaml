@@ -1,0 +1,9 @@
+apiVersion: backstage.io/v1alpha1
+kind: Resource
+metadata:
+  name: youtrack
+  description: External YouTrack service used by the youtrack-python service
+spec:
+  type: external-service
+  owner: group:default/kanenggg
+  system: system:default/youtrack-python

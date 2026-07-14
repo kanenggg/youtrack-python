@@ -1,0 +1,8 @@
+apiVersion: backstage.io/v1alpha1
+kind: System
+metadata:
+  name: youtrack-python
+  description: Python integration services for YouTrack
+spec:
+  owner: group:default/kanenggg
+  domain: domain:default/developer-tools

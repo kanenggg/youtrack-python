@@ -1,0 +1,10 @@
+apiVersion: backstage.io/v1alpha1
+kind: Group
+metadata:
+  name: kanenggg
+  description: Maintainers of the youtrack-python project
+spec:
+  type: team
+  profile:
+    displayName: kanenggg
+  children: []
